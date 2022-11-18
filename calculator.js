@@ -1,3 +1,5 @@
+let resultsDisplay = document.getElementById("resultsDisplay");
+
 function operate(firstNum, operator, secondNum) {
     let result = 0;
     switch(operator) {
@@ -32,3 +34,13 @@ function divideNum(numOne, numTwo) {
 function multiplyNum(numOne, numTwo) {
     return(parseInt(numOne) * parseInt(numTwo));
 }
+
+function displayNums(numberToDisplay) {
+    resultsDisplay.innerText += numberToDisplay;
+}
+
+document.querySelectorAll(".intButton").forEach(item => {
+    item.addEventListener("click", event => {
+        displayNums(event.target.innerHTML);
+    })
+})

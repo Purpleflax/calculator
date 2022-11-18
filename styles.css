@@ -6,27 +6,45 @@ body {
 }
 
 #calcBody {
-    background-color: grey;
+    background-color: black;
     width: 400px;
     height: 600px;
     display: flex;
-    justify-content: space-around;
-    align-items: center;
+    flex-direction: column;
+    box-shadow: rgb(38, 57, 77) 0px 20px 30px -10px;
 }
 
-#intButtons {
+#buttons {
+    display: grid;
+    grid-template-rows: repeat(5, 1fr);
+}
+
+#zero {
+    width: 198px;
+}
+
+#resultsDisplay {
+    width:400px;
+    height: 200px;
     display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    align-items: flex-end;
+    justify-content: flex-end;
+    font-family: 'Times New Roman', Times, serif;
+    font-size: 50px;
+    color: white;
+    padding-bottom: 50px;
 }
 
-#operatorButtons {
-    display:flex;
-    flex-direction: column;
+button {
+    width: 97px;
+    height: 80px;
+    border: 1px, solid black;
+}
+
+.operatorButton {
+    background-color: orange;
 }
 
 .row {
-    display: flex;
-    flex-direction: row;
+    gap: 0;
 }
