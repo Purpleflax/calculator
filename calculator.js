@@ -1,7 +1,12 @@
 let resultsDisplay = document.getElementById("resultsDisplay");
 let evaluate = document.getElementById("equals");
 let clearDisplay = document.getElementById("clear");
-let decimalPoint = document.getElementById("decimal")
+let decimalPoint = document.getElementById("decimal");
+let plusOrMinus = document.getElementById("plusOrMinus");
+let percentSign = document.getElementById("percent");
+let decimalPresent = 0;
+let switchedSign = 0;
+let percentOccurance = 0;
 let ansDisplayed;
 let clickedOperator;
 let inputNumOne;
@@ -10,16 +15,16 @@ let currentAns;
 let operatorPressed = 0;
 
 function addNum(numOne, numTwo) {
-    return(parseInt(numOne) + parseInt(numTwo));
+    return(parseFloat(numOne) + parseFloat(numTwo));
 }
 function subtractNum(numOne, numTwo) {
-    return(parseInt(numOne) - parseInt(numTwo));
+    return(parseFloat(numOne) - parseFloat(numTwo));
 }
 function divideNum(numOne, numTwo) {
-    return(parseInt(numOne) / parseInt(numTwo));
+    return(parseFloat(numOne) / parseFloat(numTwo));
 }
 function multiplyNum(numOne, numTwo) {
-    return(parseInt(numOne) * parseInt(numTwo));
+    return(parseFloat(numOne) * parseFloat(numTwo));
 }
 
 function displayNums(numberToDisplay) {
@@ -40,6 +45,7 @@ function displayNums(numberToDisplay) {
         resultsDisplay.innerText += numberToDisplay;
     } else {
         resultsDisplay.innerText = "0";
+        decimalPresent = 0;
     }
 }
 
@@ -59,15 +65,16 @@ document.querySelectorAll(".operatorButton").forEach(item => {
     item.addEventListener("click", event => {
         if (inputNumTwo != undefined) {
             currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);;
-            resultsDisplay.innerText = currentAns
+            resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
             inputNumOne = currentAns;
             inputNumTwo = undefined;
+            decimalPresent = 0;
             ansDisplayed = 2;
         } else if (ansDisplayed == 1) {
             inputNumOne = currentAns;
             displayNums("operator");
         } else if (inputNumTwo == undefined) {
-            displayNums("operator")
+            displayNums("operator");
         }
         clickedOperator = event.target.innerHTML;
         return(clickedOperator);
@@ -75,17 +82,52 @@ document.querySelectorAll(".operatorButton").forEach(item => {
 })
 
 evaluate.addEventListener("click", event => {
-    currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);;
-    resultsDisplay.innerText = currentAns
-    ansDisplayed = 1;
+    if (switchedSign == 0 && percentOccurance == 0) {
+        currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);
+        resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
+        ansDisplayed = 1;
+    } else if (switchedSign == 1) {
+        currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) * -1;
+        resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
+        ansDisplayed = 1;
+        switchedSign = 0;
+    } else if (percentOccurance == 1) {
+        currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) / 100;
+        resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
+        ansDisplayed = 1;
+        percentOccurance = 0;
+    }
 })
 
 clearDisplay.addEventListener("click", event => {
     inputNumOne = 0;
     inputNumTwo = 0;
+    decimalPresent = 0;
     clickedOperator = undefined;
     displayNums("operator");
 })
+
+decimalPoint.addEventListener("click", event => {
+    if (decimalPresent != 1) {
+        if (resultsDisplay.innerText == 0) {
+            displayNums("0.")
+        } else {
+            displayNums(".");
+        }
+    }
+    decimalPresent = 1;
+})
+
+plusOrMinus.addEventListener("click", event => {
+    switchedSign = 1;
+    resultsDisplay.innerText = parseFloat(resultsDisplay.innerText) * -1;
+})
+
+percentSign.addEventListener("click", event => {
+    percentOccurance = 1;
+    resultsDisplay.innerText = parseFloat(resultsDisplay.innerText) / 100;
+})
+
 
 function operate(firstNum, operator, secondNum) {
     let result = 0;

@@ -29,7 +29,11 @@ body {
     display: flex;
     align-items: flex-end;
     justify-content: flex-end;
+    text-overflow: ellipsis;
     font-family: 'Times New Roman', Times, serif;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
     font-size: 50px;
     color: white;
     padding-bottom: 50px;
