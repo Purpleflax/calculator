@@ -45,6 +45,10 @@ button {
     background-color: orange;
 }
 
+.evaluationButton {
+    background-color: orange;
+}
+
 .row {
     gap: 0;
 }
