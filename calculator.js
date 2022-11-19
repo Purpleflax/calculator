@@ -64,16 +64,37 @@ document.querySelectorAll(".intButton").forEach(item => {
 document.querySelectorAll(".operatorButton").forEach(item => {
     item.addEventListener("click", event => {
         if (inputNumTwo != undefined) {
-            currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);;
-            resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
-            inputNumOne = currentAns;
-            inputNumTwo = undefined;
-            decimalPresent = 0;
-            ansDisplayed = 2;
-        } else if (ansDisplayed == 1) {
+            if (switchedSign == 0 && percentOccurance == 0) {
+                currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);
+                resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
+                inputNumOne = currentAns;
+                inputNumTwo = undefined;
+                decimalPresent = 0;
+                ansDisplayed = 2;
+            } else if (switchedSign == 1) {
+                currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) * -1;
+                resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
+                inputNumOne = currentAns;
+                inputNumTwo = undefined;
+                decimalPresent = 0;
+                switchedSign = 0;
+                ansDisplayed = 2;
+            } else if (percentOccurance == 1) {
+                currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) / 100;
+                resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
+                inputNumOne = currentAns;
+                inputNumTwo = undefined;
+                decimalPresent = 0;
+                percentOccurance = 0;
+                ansDisplayed = 2;
+            }
+        } else if (ansDisplayed == 1 && switchedSign == 0) {
             inputNumOne = currentAns;
             displayNums("operator");
-        } else if (inputNumTwo == undefined) {
+        } else if (ansDisplayed == 1 && switchedSign == 1) {
+            currentAns = currentAns * -1;
+            inputNumOne = currentAns;
+            switchedSign = 0;
             displayNums("operator");
         }
         clickedOperator = event.target.innerHTML;
@@ -86,16 +107,22 @@ evaluate.addEventListener("click", event => {
         currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);
         resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
         ansDisplayed = 1;
+        inputNumOne = undefined;
+        inputNumTwo = undefined;
     } else if (switchedSign == 1) {
         currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) * -1;
         resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
         ansDisplayed = 1;
         switchedSign = 0;
+        inputNumOne = undefined;
+        inputNumTwo = undefined;
     } else if (percentOccurance == 1) {
         currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) / 100;
         resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
         ansDisplayed = 1;
         percentOccurance = 0;
+        inputNumOne = undefined;
+        inputNumTwo = undefined;
     }
 })
 
