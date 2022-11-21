@@ -70,8 +70,16 @@ button {
     background-color: orange;
 }
 
+.operatorButton:hover {
+    background-color: rgb(173, 105, 3)
+}
+
 .evaluationButton {
     background-color: orange;
+}
+
+.evaluationButton:hover {
+    background-color: rgb(173, 105, 3);
 }
 
 .row {

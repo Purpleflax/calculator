@@ -5,27 +5,71 @@ let decimalPoint = document.getElementById("decimal");
 let plusOrMinus = document.getElementById("plusOrMinus");
 let percentSign = document.getElementById("percent");
 let decimalPresent = 0;
-let switchedSign = 0;
 let percentOccurance = 0;
 let ansDisplayed;
-let clickedOperator;
-let inputNumOne;
-let inputNumTwo;
-let currentAns;
+let clickedOperator = undefined;
+let inputNumOne = undefined;
+let inputNumTwo = undefined;
+let currentAns = undefined;
 let operatorPressed = 0;
 
 function addNum(numOne, numTwo) {
     return(parseFloat(numOne) + parseFloat(numTwo));
-}
+};
 function subtractNum(numOne, numTwo) {
     return(parseFloat(numOne) - parseFloat(numTwo));
-}
+};
 function divideNum(numOne, numTwo) {
     return(parseFloat(numOne) / parseFloat(numTwo));
-}
+};
 function multiplyNum(numOne, numTwo) {
     return(parseFloat(numOne) * parseFloat(numTwo));
-}
+};
+
+document.querySelectorAll(".operatorButton").forEach(item => {
+    item.addEventListener("click", handleOperatorPress);
+})
+document.querySelectorAll(".intButton").forEach(item => {
+    item.addEventListener("click", handleIntegerPress);
+}) 
+evaluate.addEventListener("click", evaluateItems);
+clearDisplay.addEventListener("click", emptyDisplay);
+percentSign.addEventListener("click", toPercent);
+decimalPoint.addEventListener("click", decimalFunction); 
+plusOrMinus.addEventListener("click", changeSign); 
+document.addEventListener("keydown", event => {
+    console.log(event.key);
+    if (!isNaN(event.key)) {
+        if (event.key != 0) {document.getElementById(event.key).click();}
+        else {document.getElementById("zero").click();}
+    };
+    if (event.key == "Enter") {
+        evaluateItems();
+    };
+    if (event.key == "+") {
+        handleOperatorPress();
+        clickedOperator = "+";
+    }
+    if (event.key == "*") {
+        handleOperatorPress();
+        clickedOperator = "x";
+    }
+    if (event.key == "/") {
+        event.preventDefault();
+        handleOperatorPress();
+        clickedOperator = "÷";
+    }
+    if (event.key == "-") {
+        handleOperatorPress();
+        clickedOperator = "-";
+    }
+    if (event.key == "%") {
+        toPercent();
+    }
+    if (event.key == ".") {
+        decimalFunction();
+    }
+});
 
 function displayNums(numberToDisplay) {
     if (numberToDisplay != "operator" && resultsDisplay.innerHTML == "0") {
@@ -41,119 +85,95 @@ function displayNums(numberToDisplay) {
         resultsDisplay.innerText = "";
         resultsDisplay.innerText += numberToDisplay;
         ansDisplayed = 0;
-    } else if (numberToDisplay != "operator") {
+    } else if (numberToDisplay != "operator" ) {
         resultsDisplay.innerText += numberToDisplay;
     } else {
         resultsDisplay.innerText = "0";
         decimalPresent = 0;
     }
-}
+};
 
-document.querySelectorAll(".intButton").forEach(item => {
-    item.addEventListener("click", event => {
-        let clickedNum = event.target.innerHTML
-        displayNums(clickedNum);
-        if (resultsDisplay.innerText != 0 && clickedOperator == undefined)  {
-            inputNumOne = resultsDisplay.innerText;
-        } else {
-            inputNumTwo = resultsDisplay.innerText;
-        }
-    })
-})
+function handleIntegerPress() {
+    let clickedNum = event.target.innerHTML;
+    displayNums(clickedNum);
+    if (resultsDisplay.innerText != 0 && clickedOperator == undefined)  {
+        inputNumOne = resultsDisplay.innerText;
+    } else {
+        inputNumTwo = resultsDisplay.innerText;
+    }
+};
 
-document.querySelectorAll(".operatorButton").forEach(item => {
-    item.addEventListener("click", event => {
-        if (inputNumTwo != undefined) {
-            if (switchedSign == 0 && percentOccurance == 0) {
-                currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);
-                resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
-                inputNumOne = currentAns;
-                inputNumTwo = undefined;
-                decimalPresent = 0;
-                ansDisplayed = 2;
-            } else if (switchedSign == 1) {
-                currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) * -1;
-                resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
-                inputNumOne = currentAns;
-                inputNumTwo = undefined;
-                decimalPresent = 0;
-                switchedSign = 0;
-                ansDisplayed = 2;
-            } else if (percentOccurance == 1) {
-                currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) / 100;
-                resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
-                inputNumOne = currentAns;
-                inputNumTwo = undefined;
-                decimalPresent = 0;
-                percentOccurance = 0;
-                ansDisplayed = 2;
-            }
-        } else if (ansDisplayed == 1 && switchedSign == 0) {
-            inputNumOne = currentAns;
-            displayNums("operator");
-        } else if (ansDisplayed == 1 && switchedSign == 1) {
-            currentAns = currentAns * -1;
-            inputNumOne = currentAns;
-            switchedSign = 0;
-            displayNums("operator");
-        }
-        clickedOperator = event.target.innerHTML;
-        return(clickedOperator);
-    })
-})
 
-evaluate.addEventListener("click", event => {
-    if (switchedSign == 0 && percentOccurance == 0) {
+function handleOperatorPress() {
+    if (inputNumTwo != undefined) {
+        currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);
+        resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
+        inputNumOne = currentAns;
+        inputNumTwo = undefined;
+        decimalPresent = 0;
+        ansDisplayed = 2;
+    } else if (inputNumOne != undefined) {
+        displayNums("operator");
+    } else if (ansDisplayed == 1) {
+        inputNumOne = currentAns;
+        displayNums("operator");
+    } else if (ansDisplayed == 1) {
+        currentAns = currentAns * -1;
+        inputNumOne = currentAns;
+        displayNums("operator");
+    }
+    clickedOperator = event.target.innerHTML;
+    return(clickedOperator);
+};
+
+function evaluateItems() {
         currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);
         resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
         ansDisplayed = 1;
         inputNumOne = undefined;
         inputNumTwo = undefined;
-    } else if (switchedSign == 1) {
-        currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) * -1;
-        resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
-        ansDisplayed = 1;
-        switchedSign = 0;
-        inputNumOne = undefined;
-        inputNumTwo = undefined;
-    } else if (percentOccurance == 1) {
-        currentAns = (operate(inputNumOne, clickedOperator, inputNumTwo)) / 100;
-        resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
-        ansDisplayed = 1;
-        percentOccurance = 0;
-        inputNumOne = undefined;
-        inputNumTwo = undefined;
-    }
-})
+};
 
-clearDisplay.addEventListener("click", event => {
+function emptyDisplay() {
     inputNumOne = 0;
     inputNumTwo = 0;
     decimalPresent = 0;
     clickedOperator = undefined;
     displayNums("operator");
-})
+};
 
-decimalPoint.addEventListener("click", event => {
+function decimalFunction() {
     if (decimalPresent != 1) {
         if (resultsDisplay.innerText == 0) {
-            displayNums("0.")
+            displayNums("0.");
         } else {
             displayNums(".");
         }
     }
     decimalPresent = 1;
-})
+};
 
-plusOrMinus.addEventListener("click", event => {
-    switchedSign = 1;
+function changeSign() {
+    if (inputNumTwo == undefined && clickedOperator == undefined) {
+        inputNumOne = inputNumOne - (inputNumOne * 2);
+    } else if (inputNumOne != undefined && clickedOperator != undefined) {
+        inputNumTwo = inputNumTwo - (inputNumTwo * 2);
+    } else {
+        currentAns = currentAns - (currentAns * 2);
+    }
     resultsDisplay.innerText = parseFloat(resultsDisplay.innerText) * -1;
-})
+};
 
-percentSign.addEventListener("click", event => {
-    percentOccurance = 1;
+function toPercent() {
+    if (inputNumTwo == undefined && clickedOperator == undefined) {
+        inputNumOne = inputNumOne / 100;
+    } else if (inputNumOne != undefined && clickedOperator != undefined) {
+        inputNumTwo = inputNumTwo / 100;
+    } else {
+        currentAns = currentAns / 100;
+    }
     resultsDisplay.innerText = parseFloat(resultsDisplay.innerText) / 100;
-})
+};
 
 
 function operate(firstNum, operator, secondNum) {
@@ -176,4 +196,4 @@ function operate(firstNum, operator, secondNum) {
             break;
     }
     return(result);
-}
+};
