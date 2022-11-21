@@ -69,6 +69,9 @@ document.addEventListener("keydown", event => {
     if (event.key == ".") {
         decimalFunction();
     }
+    if (event.key == "Backspace") {
+        emptyDisplay();
+    }
 });
 
 function displayNums(numberToDisplay) {
@@ -127,16 +130,25 @@ function handleOperatorPress() {
 };
 
 function evaluateItems() {
+    if (inputNumTwo != undefined) {
         currentAns = operate(inputNumOne, clickedOperator, inputNumTwo);
         resultsDisplay.innerText = Math.round((currentAns + Number.EPSILON) * 10000) / 10000;
         ansDisplayed = 1;
         inputNumOne = undefined;
         inputNumTwo = undefined;
+    } else if (currentAns != undefined) {
+        resultsDisplay.innerText = currentAns;
+    } else if (inputNumOne == undefined && inputNumTwo == undefined && currentAns == undefined) {
+        resultsDisplay.innerText = "0";
+    } else {
+        resultsDisplay.innerText = inputNumOne;
+    }
 };
 
 function emptyDisplay() {
-    inputNumOne = 0;
-    inputNumTwo = 0;
+    inputNumOne = undefined;
+    inputNumTwo = undefined;
+    currentAns = undefined;
     decimalPresent = 0;
     clickedOperator = undefined;
     displayNums("operator");
